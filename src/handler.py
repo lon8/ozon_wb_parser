@@ -10,11 +10,7 @@ router = APIRouter()
 @router.post('/req')
 def start_programm(data: Payload):
     
-    task = (data.marketplace, data.client_id, data.client_key)
-    
-    with ProcessPoolExecutor() as executor:
-        future = executor.submit(run, *task)
-        result = future.result()
+    result = run(data.marketplace, data.client_id, data.client_key)
     
     response = {
         "client_id": data.client_id,

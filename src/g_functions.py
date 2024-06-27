@@ -1,7 +1,9 @@
 import gspread
 from google.oauth2.service_account import Credentials
 from googleapiclient.discovery import build
+from tqdm import tqdm
 from datetime import datetime
+from time import sleep
 from loguru import logger
 
 # Путь к файлу JSON с учетными данными сервисного аккаунта
@@ -34,14 +36,22 @@ def put_data_in_ws(data: list, worksheet_name: str, spreadsheet_id: str):
     # Записываем данные в Google Sheet
     worksheet.clear()
     
+    worksheet.insert_row([], index=1)
+    worksheet.insert_row([], index=2)
+    
+    index = 0
+    
     for i, row in enumerate(data):
-        worksheet.insert_row(row, index=i + 1)
+        worksheet.insert_row(row, index=3 + i)
+        index = i
+    
+    worksheet.insert_row(['Дата актуализации:', f'{datetime.now()}'], index=3 + index + 3)
     
 
 def create_worksheet(worksheet_name: str, spreadsheet_id: str, count_rows: int, count_columns: int) -> None:
     spreadsheet = gc.open_by_key(spreadsheet_id)
     
-    worksheet = spreadsheet.add_worksheet(title=worksheet_name, rows=count_rows, cols=count_columns)
+    worksheet = spreadsheet.add_worksheet(title=worksheet_name, rows=count_rows + 1000, cols=count_columns + 1000)
     worksheet.clear()
     
     logger.info(f"Worksheet with name {worksheet_name} has created!")
