@@ -1,7 +1,6 @@
 import gspread
 from google.oauth2.service_account import Credentials
 from googleapiclient.discovery import build
-from tqdm import tqdm
 from datetime import datetime
 from time import sleep
 from loguru import logger
@@ -23,7 +22,7 @@ gc = gspread.authorize(credentials)
 # Авторизация для Google Drive API
 drive_service = build('drive', 'v3', credentials=credentials)
 
-def put_data_in_ws(data: list, worksheet_name: str, spreadsheet_id: str):
+def put_data_in_ws(data: list[list], worksheet_name: str, spreadsheet_id: str):
     spreadsheet = gc.open_by_key(spreadsheet_id)
     
     # Открываем указанный лист по его названию
