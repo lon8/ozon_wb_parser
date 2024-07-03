@@ -243,10 +243,41 @@ def create_supply_orders_report(client_id: str, client_key: str) -> list[list]:
     
     return prepare_orders_report(data)
 
-def create_adv_report(client_id: str, client_key: str) -> list[list]:
+
+def prepare_ads_report(payload: dict, headers: dict, beaver_token: str) -> list[list]:
+
+    headers = {
+        'Authorization': f'Bearer {beaver_token}',
+        "Client-Id": client_id,
+        "Api-Key": client_key
+    }
+    
+    response = requests.post('https://performance.ozon.ru/api/client/statistic/products/generate/json', json=payload, headers=headers)
+    
+    uuid = response.json()['UUID']
+    
+    sleep(10)
+    
+    report_response = requests.get(f'https://performance.ozon.ru/api/client/statistics/report?UUID={uuid}', headers=headers)
+    
+    data = report_response.json()['report']['rows']
+    
+    first_row = ["OZON id","Артикул","Заказы шт","Заказы руб", "Продвижение в поиске, руб", "Трафареты, руб","Реклама, руб","ДРР, %"]
+    result = []
+    
+    result.append(first_row)
+    
+    for item in data:
+        pass # Continue
+    
+    sleep(5)
+
+
+def create_ads_report(client_id: str, client_key: str, date_to: str, date_from: str) -> list[list]:
+    
     payload = {
-        "from": "2024-01-24T14:15:22Z",
-        "to": "2024-02-24T14:15:22Z"
+        "from": f"{date_from}",
+        "to": f"{date_to}"
     }
     
     beaver_token = get_beaver_token(client_id, client_key)
@@ -257,22 +288,17 @@ def create_adv_report(client_id: str, client_key: str) -> list[list]:
         "Api-Key": client_key
     }
     
-    response = requests.post('https://performance.ozon.ru/api/client/statistic/products/generate/json', json=payload, headers=headers)
+    data = prepare_ads_report(payload, headers, beaver_token)
     
-    uuid = response.json()['UUID']
-     
-    sleep(10)
-    
-    report_response = requests.get(f'https://performance.ozon.ru:443/api/client/statistics/report?UUID={uuid}', headers=headers)
-    
-    data = report_response.json()
     
     sleep(5)
     
 if __name__ == '__main__':
+    date_to = '2024-02-24T14:15:22Z'
+    date_from = '2024-01-24T14:15:22Z'
     performance_client_id = '30757988-1719325107981@advertising.performance.ozon.ru'
     performance_client_key = "-PPvEshjvyZA60idYi6xs6VBaUgA31RlerMcb7z4cJzXGyvhm33kEUFw9Z7qrhHT6IqYuISbuooeIowViw"
     client_id = "550209"
     client_key = "23448f62-23dd-4156-8a60-76525944756c"
-    data = create_adv_report(performance_client_id, performance_client_key)
+    data = create_ads_report(performance_client_id, performance_client_key, date_to, date_from)
     logger.info(data)
