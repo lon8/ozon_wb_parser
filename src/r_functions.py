@@ -260,17 +260,46 @@ def prepare_ads_report(payload: dict, headers: dict, beaver_token: str) -> list[
     
     report_response = requests.get(f'https://performance.ozon.ru/api/client/statistics/report?UUID={uuid}', headers=headers)
     
+    campaign_response = requests.get('https://performance.ozon.ru/api/client/campaign?advObjectType=SKU&state=CAMPAIGN_STATE_UNKNOWN', headers=headers)
+    
+    campaign_data = campaign_response.json()
+    
     data = report_response.json()['report']['rows']
     
-    first_row = ["OZON id","Артикул","Заказы шт","Заказы руб", "Продвижение в поиске, руб", "Трафареты, руб","Реклама, руб","ДРР, %"]
+    first_row = ["OZON id","Артикул","Заказы шт","Заказы руб", "Продвижение в поиске, руб","ДРР, %"]
     result = []
     
     result.append(first_row)
     
     for item in data:
-        pass # Continue
+        row = [
+            item['sku'],
+            item['offerId'],
+            item['orders'],
+            item['ordersMoney'],
+            item['moneySpent'],
+            item['drr']
+        ]
+        result.append(row)
     
     sleep(5)
+
+
+def create_daily_ads_report(client_id: str, client_key: str, date_to, date_from):
+    
+    beaver_token = get_beaver_token(client_id, client_key)
+    
+    headers = {
+        'Authorization': f'Bearer {beaver_token}',
+        "Client-Id": client_id,
+        "Api-Key": client_key
+    }
+    
+    response = requests.get(f"https://performance.ozon.ru/api/client/statistics/daily/json?dateFrom={date_from}&dateTo={date_to}", headers=headers)
+    
+    data = response.json()
+    
+    sleep(1)
 
 
 def create_ads_report(client_id: str, client_key: str, date_to: str, date_from: str) -> list[list]:
@@ -292,7 +321,9 @@ def create_ads_report(client_id: str, client_key: str, date_to: str, date_from: 
     
     
     sleep(5)
-    
+
+
+
 if __name__ == '__main__':
     date_to = '2024-02-24T14:15:22Z'
     date_from = '2024-01-24T14:15:22Z'
@@ -300,5 +331,6 @@ if __name__ == '__main__':
     performance_client_key = "-PPvEshjvyZA60idYi6xs6VBaUgA31RlerMcb7z4cJzXGyvhm33kEUFw9Z7qrhHT6IqYuISbuooeIowViw"
     client_id = "550209"
     client_key = "23448f62-23dd-4156-8a60-76525944756c"
-    data = create_ads_report(performance_client_id, performance_client_key, date_to, date_from)
+    # data = create_ads_report(performance_client_id, performance_client_key, date_to, date_from)
+    data = create_daily_ads_report(performance_client_id, performance_client_key, date_to='2024-02-24', date_from='2024-01-24')
     logger.info(data)
