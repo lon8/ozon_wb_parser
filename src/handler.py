@@ -16,7 +16,7 @@ def f(data: Request):
 
 @router.post('/api/req')
 async  def start_programm(data: Payload):
-    result = run(data.marketplace, data.client_id, data.client_key, 
+    result = run(data.marketplace, data.market, data.performance_key, data.performance_secret, data.client_id, data.client_key, 
         data.startDate, data.endDate)
     
     response = {

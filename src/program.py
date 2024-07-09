@@ -20,7 +20,7 @@ import dateutil.parser
     
 #     create_worksheet("Товары", spreadsheet_id, count_rows, count_columns)
     
-def run(marketplace, client_id, client_key, startDate, endDate):
+def run(marketplace, market, performance_key, performance_secret, client_id, client_key, startDate, endDate):
 
     spreadsheet = GSheet.create(
         f'{marketplace}_{datetime.now()}',
@@ -28,7 +28,7 @@ def run(marketplace, client_id, client_key, startDate, endDate):
         dateutil.parser.isoparse(endDate) 
         
     )
-    parser = ParserSession(client_id, client_key, startDate, endDate)
+    parser = ParserSession(client_id, client_key, startDate, endDate, performance_key, performance_secret)
 
     execute_statistics_parsing(spreadsheet, {
         "Доступность товаров": {
