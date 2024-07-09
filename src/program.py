@@ -1,6 +1,6 @@
 from datetime import datetime
-from r_functions import ParserSession
-from g_functions import GSheet
+from src.r_functions import ParserSession
+from src.g_functions import GSheet
 from loguru import logger
 import dateutil.parser
 # def run(marketplace, client_id, client_key):
