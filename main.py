@@ -20,4 +20,4 @@ app = get_application()
 
 if __name__ == '__main__':
     import uvicorn
-    uvicorn.run(app, host='127.0.0.1', port=8000, log_level='debug', access_log=True)
+    uvicorn.run(app, host='127.0.0.1', port=8080, log_level='debug', access_log=True)
