@@ -41,6 +41,7 @@ async  def start_programm(data: Payload, background_tasks: BackgroundTasks):
     )
     
     response = {
+        "ok": True,
         "sheet_url": result
     }
     

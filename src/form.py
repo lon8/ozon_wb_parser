@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 
 class Payload(BaseModel):
-    shopName: str
+    marketName: str
     startDate: str
     endDate: str
 
