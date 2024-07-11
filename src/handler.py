@@ -67,5 +67,3 @@ async  def get_markets():
         }
 
     return data
-
-
