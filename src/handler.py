@@ -27,14 +27,14 @@ async  def start_programm(data: Payload, background_tasks: BackgroundTasks):
         markets = json.load(f)['markets']
 
         for m in markets:
-            if m['name'] == data.market:
+            if m['name'] == data.shopName:
                 market = m
 
     if not market:
         return {'ok': False, 'status': 401, 'error': 'Market is not found'}
 
     result = run(
-        data.marketplace, data.market, market['performance_key'], 
+        market['marketplace'], data.shopName, market['performance_key'], 
         market['performance_secret'], market['client_id'], 
         market['client_key'], data.startDate, data.endDate,
         background_tasks
@@ -61,4 +61,11 @@ async  def get_markets():
     with open('markets.json') as f:
         data = json.load(f)
 
+    for d in data:
+        data[d] = {
+            'name': data[d]['name'],
+        }
+
     return data
+
+
