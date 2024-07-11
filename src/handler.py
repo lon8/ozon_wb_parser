@@ -46,6 +46,7 @@ async  def start_programm(data: Payload, background_tasks: BackgroundTasks):
     
     return response
 
+
 @router.post('/api/markets')
 async  def save_markets(data: Markets):
     with open('markets.json', 'w') as f:

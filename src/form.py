@@ -16,3 +16,6 @@ class Market(BaseModel):
 
 class Markets(BaseModel):
     markets: list[Market]
+    startDate: str
+    endDate: str
+
