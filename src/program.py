@@ -3,6 +3,7 @@ from src.r_functions import ParserSession
 from src.g_functions import GSheet
 from loguru import logger
 import dateutil.parser
+
 # def run(marketplace, client_id, client_key):
 #     spreadsheet_id = create_spreadsheet(marketplace)
 
@@ -20,44 +21,48 @@ import dateutil.parser
     
 #     create_worksheet("Товары", spreadsheet_id, count_rows, count_columns)
     
-def run(marketplace, market, performance_key, performance_secret, client_id, client_key, startDate, endDate):
+def run(marketplace, spreadsheet_url, performance_key, performance_secret, client_id, client_key, startDate, endDate,
+        background_tasks) -> str:
 
     spreadsheet = GSheet.create(
-        f'{marketplace}_{datetime.now()}',
+        spreadsheet_url,
         dateutil.parser.isoparse(startDate),
         dateutil.parser.isoparse(endDate) 
-        
     )
     parser = ParserSession(client_id, client_key, startDate, endDate, performance_key, performance_secret)
 
-    execute_statistics_parsing(spreadsheet, {
-        "Доступность товаров": {
-            "GetData": parser.get_products_awailability
-        },
-        "Размещение": {
-            "GetData": parser.create_supply_report
-        },
-        "Реклама": {
-            "GetData": parser.create_ads_report
-        },
-        "Начисления по товарам":{
-            "GetData": parser.get_order_incomes
-        },
-        "Товары":{
-            "GetData": parser.create_products_report,
-        },
-        "Возвраты": {
-            "GetData": lambda: parser.create_returns_report('fbo') + parser.create_returns_report('fbs')[1:]
-        },
-        "Продажи": {
-            "GetData": lambda: parser.create_postings_report('fbo') + parser.create_postings_report('fbs')[1:],
-        },
-        "Заявки на поставку": {
-            "GetData": parser.create_supply_orders_report
-        },
-    })
+    def work():
+        execute_statistics_parsing(spreadsheet, {
+            "Доступность товаров": {
+                "GetData": parser.get_products_awailability
+            },
+            "Размещение": {
+                "GetData": parser.create_supply_report
+            },
+            "Реклама": {
+                "GetData": parser.create_ads_report
+            },
+            "Начисления по товарам":{
+                "GetData": parser.get_order_incomes
+            },
+            "Товары":{
+                "GetData": parser.create_products_report,
+            },
+            "Возвраты": {
+                "GetData": lambda: parser.create_returns_report('fbo') + parser.create_returns_report('fbs')[1:]
+            },
+            "Продажи": {
+                "GetData": lambda: parser.create_postings_report('fbo') + parser.create_postings_report('fbs')[1:],
+            },
+            "Заявки на поставку": {
+                "GetData": parser.create_supply_orders_report
+            },
+        })
+        parser.end()
 
-    parser.end()
+    background_tasks.add_task(work)
+
+    return spreadsheet_url
 
 def execute_statistics_parsing(spreadsheet: GSheet, callbacks: dict):
     '''The func goes through callbacks dict which includes:

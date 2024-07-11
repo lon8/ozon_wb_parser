@@ -33,9 +33,9 @@ class GSheet:
         self.__date_start = dateStart
         self.__date_end = dateEnd
 
-    def create(name: str, startDate: datetime, endDate: datetime) -> GSheet:
-        # Создаем новый Google Sheet
-        spreadsheet = gc.open_by_key("1mRDcne9rdAqkHSXuYuEAcdl0RxphVr0Hti_6Ua4ZHUg")
+    def create(url: str, startDate: datetime, endDate: datetime) -> GSheet:
+
+        spreadsheet = gc.open_by_url(url)
 
         # ID созданного Google Sheet
         spreadsheet_id = spreadsheet.id
