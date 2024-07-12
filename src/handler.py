@@ -15,17 +15,23 @@ def f(data: Request):
     return 200
 
 @router.post('/api/req')
-async  def start_programm(data: Payload, background_tasks: BackgroundTasks):
+async  def start_programm(data: Request, background_tasks: BackgroundTasks):
     if not os.path.exists('markets.json'):
         return {'ok': False, 'status': 400, 'error': 'No markets data'}
 
     market = None
 
+    data = data.json()
+    if 'input' in data:
+        data = data['input']
+    if 'body' in data:
+        data = data['body']
+
     with open('markets.json') as f:
         markets = json.load(f)['markets']
 
         for m in markets:
-            if m['name'] == data.shopName:
+            if m['name'] == data['shopName']:
                 market = m
 
     if not market:
@@ -34,7 +40,7 @@ async  def start_programm(data: Payload, background_tasks: BackgroundTasks):
     result = run(
         market['marketplace'], m['spreadsheet_url'], market['performance_key'], 
         market['performance_secret'], market['client_id'], 
-        market['client_key'], data.startDate, data.endDate,
+        market['client_key'], data['startDate'], data['endDate'],
         background_tasks
     )
     
