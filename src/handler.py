@@ -62,9 +62,8 @@ async  def get_markets():
     with open('markets.json') as f:
         data = json.load(f)
 
-    for d in data:
-        data[d] = {
-            'name': data[d]['name'],
-        }
+    response = {
+        'market_names': [m['name'] for m in data['markets']]
+    }
 
-    return data
+    return response
