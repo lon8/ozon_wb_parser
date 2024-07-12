@@ -21,7 +21,7 @@ async  def start_programm(data: Request, background_tasks: BackgroundTasks):
 
     market = None
 
-    data = data.json()
+    data = await data.json()
     if 'input' in data:
         data = data['input']
     if 'body' in data:
