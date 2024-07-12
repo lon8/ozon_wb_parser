@@ -1,7 +1,5 @@
 from fastapi import APIRouter, BackgroundTasks
 from src.form import *
-from concurrent.futures import ProcessPoolExecutor
-from typing import Tuple
 from src.program import run
 from fastapi import Request
 import sys
@@ -42,6 +40,7 @@ async  def start_programm(data: Payload, background_tasks: BackgroundTasks):
     
     response = {
         "ok": True,
+        "status": 200,
         "sheet_url": result
     }
     
