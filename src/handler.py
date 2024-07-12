@@ -32,7 +32,7 @@ async  def start_programm(data: Payload, background_tasks: BackgroundTasks):
         return {'ok': False, 'status': 401, 'error': 'Market is not found'}
 
     result = run(
-        market['marketplace'], data.shopName, market['performance_key'], 
+        market['marketplace'], m['spreadsheet_url'], market['performance_key'], 
         market['performance_secret'], market['client_id'], 
         market['client_key'], data.startDate, data.endDate,
         background_tasks
