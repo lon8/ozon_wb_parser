@@ -49,10 +49,10 @@ def run(marketplace, spreadsheet_url, performance_key, performance_secret, clien
                 "GetData": parser.create_products_report,
             },
             "Возвраты": {
-                "GetData": lambda: parser.create_returns_report('fbo') + parser.create_returns_report('fbs')[1:]
+                "GetData": lambda: parser.create_returns_report('fbo') + parser.create_returns_report('fbs')
             },
             "Продажи": {
-                "GetData": lambda: parser.create_postings_report('fbo') + parser.create_postings_report('fbs')[1:],
+                "GetData": lambda: parser.create_postings_report('fbo') + parser.create_postings_report('fbs'),
             },
             "Заявки на поставку": {
                 "GetData": parser.create_supply_orders_report
