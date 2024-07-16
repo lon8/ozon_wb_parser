@@ -3,9 +3,8 @@ import gspread
 from google.oauth2.service_account import Credentials
 from googleapiclient.discovery import build
 from datetime import datetime
-from time import sleep
 from loguru import logger
-from xlsxwriter.utility import xl_col_to_name, xl_cell_to_rowcol
+from xlsxwriter.utility import xl_col_to_name
 
 
 # Путь к файлу JSON с учетными данными сервисного аккаунта
@@ -69,7 +68,9 @@ class GSheet:
         
         worksheet = self.__get_worksheet(worksheet_name, True)
         current_data = worksheet.get_all_values()
-        data = self.__deleteDuplicatesFrom(data, current_data)
+
+        if worksheet_name != 'Реклама':
+            data = self.__deleteDuplicatesFrom(data, current_data)
         if not data:
             return
 
