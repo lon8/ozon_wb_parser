@@ -77,6 +77,10 @@ def execute_statistics_parsing(spreadsheet: GSheet, callbacks: dict):
                 spreadsheet.put_data_in_ws(data, sheet_name)
             except Exception as e:
                 logger.exception(f'Failed to save {sheet_name}')
+            else:
+                logger.info(f'{sheet_name} saved')
+
+        logger.info(f'No data for {sheet_name}')
 
                 
 def get_data_rows_and_columns_count(data: dict) -> tuple[int, int]:
