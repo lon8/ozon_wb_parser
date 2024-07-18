@@ -30,7 +30,7 @@ class Parser:
         self.__date_from_dt = dateutil.parser.isoparse(self.__date_from) 
         self.__date_to_dt = dateutil.parser.isoparse(self.__date_to)
         self.__period_days = self.__date_to_dt - self.__date_from_dt
-        self.__period_days = self.__period_days.days
+        self.__period_days = max(self.__period_days.days, 1)
         
         # dates without time
         self.__date_from_truncated = self.__date_from[:10] 
