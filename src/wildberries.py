@@ -1,6 +1,5 @@
-from ozon import Parser as OzonParser
+from src.ozon import Parser as OzonParser
 import requests
-import csv
 from loguru import logger
 from tqdm import tqdm
 from time import sleep

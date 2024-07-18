@@ -1,6 +1,6 @@
-from ozon import Parser as OzonParser
-from wildberries import Parser as WildberriesParser
-from g_functions import GSheet
+from src.ozon import Parser as OzonParser
+from src.wildberries import Parser as WildberriesParser
+from src.g_functions import GSheet
 from loguru import logger
 import dateutil.parser
     
@@ -79,8 +79,8 @@ def execute_statistics_parsing(spreadsheet: GSheet, callbacks: dict):
                 logger.exception(f'Failed to save {sheet_name}')
             else:
                 logger.info(f'{sheet_name} saved')
-
-        logger.info(f'No data for {sheet_name}')
+        else:
+            logger.info(f'No data for {sheet_name}')
 
                 
 def get_data_rows_and_columns_count(data: dict) -> tuple[int, int]:
