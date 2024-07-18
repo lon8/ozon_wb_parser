@@ -1,54 +1,59 @@
-from src.ozon import Parser as OzonParser
-from src.wildberries import Parser as WildberriesParser
-from src.g_functions import GSheet
+from ozon import Parser as OzonParser
+from wildberries import Parser as WildberriesParser
+from g_functions import GSheet
 from loguru import logger
 import dateutil.parser
     
 def run(marketplace, spreadsheet_url, performance_key, performance_secret, client_id, client_key, startDate, endDate,
         background_tasks = None) -> str:
 
-    spreadsheet = GSheet.create(
-        spreadsheet_url,
-        dateutil.parser.isoparse(startDate),
-        dateutil.parser.isoparse(endDate) 
-    )
-    parser = (OzonParser if marketplace.lower() == 'ozon' else  WildberriesParser)(
-        client_id, client_key, startDate, endDate, performance_key, performance_secret)
-        
+    try:
+        spreadsheet = GSheet.create(
+            spreadsheet_url,
+            dateutil.parser.isoparse(startDate),
+            dateutil.parser.isoparse(endDate) 
+        )
+        parser = (OzonParser if marketplace.lower() == 'ozon' else  WildberriesParser)(
+            client_id, client_key, startDate, endDate, performance_key, performance_secret)
+    except:
+        logger.exception('Failed to get parser and spreadsheet:')
 
     def work():
-        execute_statistics_parsing(spreadsheet, {
-            "Реклама": {
-                "GetData": parser.create_ads_report
-            },
-            "Расчет поставок": {
-                "GetData": parser.create_supply_await_report
-            },
-            "Индекс локализации": {
-                "GetData": parser.create_index_localizatioons
-            },
-            "Размещение": {
-                "GetData": parser.create_supply_report
-            },
-            "Продажи": {
-                "GetData": lambda: parser.create_postings_report('fbo') + parser.create_postings_report('fbs'),
-            },
-            "Доступность товаров": {
-                "GetData": parser.get_products_awailability
-            },
-            "Начисления по товарам":{
-                "GetData": parser.get_order_incomes
-            },
-            "Товары":{
-                "GetData": parser.create_products_report,
-            },
-            "Возвраты": {
-                "GetData": lambda: parser.create_returns_report('fbo') + parser.create_returns_report('fbs')
-            },
-            "Заявки на поставку": {
-                "GetData": parser.create_supply_orders_report
-            },
-        })
+        try:
+            execute_statistics_parsing(spreadsheet, {
+                "Реклама": {
+                    "GetData": parser.create_ads_report
+                },
+                "Расчет поставок": {
+                    "GetData": parser.create_supply_await_report
+                },
+                "Индекс локализации": {
+                    "GetData": parser.create_index_localizatioons
+                },
+                "Размещение": {
+                    "GetData": parser.create_supply_report
+                },
+                "Продажи": {
+                    "GetData": lambda: parser.create_postings_report('fbo') + parser.create_postings_report('fbs'),
+                },
+                "Доступность товаров": {
+                    "GetData": parser.get_products_awailability
+                },
+                "Начисления по товарам":{
+                    "GetData": parser.get_order_incomes
+                },
+                "Товары":{
+                    "GetData": parser.create_products_report,
+                },
+                "Возвраты": {
+                    "GetData": lambda: parser.create_returns_report('fbo') + parser.create_returns_report('fbs')
+                },
+                "Заявки на поставку": {
+                    "GetData": parser.create_supply_orders_report
+                },
+            })
+        except:
+            logger.exception('Failed to run program:')
 
     if background_tasks:
         background_tasks.add_task(work)
