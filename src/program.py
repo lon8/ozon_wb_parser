@@ -1,9 +1,10 @@
-from ozon import Parser as OzonParser
-from wildberries import Parser as WildberriesParser
-from g_functions import GSheet
+from src.ozon import Parser as OzonParser
+from src.wildberries import Parser as WildberriesParser
+from src.g_functions import GSheet
 from loguru import logger
 import dateutil.parser
-    
+from multiprocessing import Process
+
 def run(marketplace, spreadsheet_url, performance_key, performance_secret, client_id, client_key, startDate, endDate,
         background_tasks = None) -> str:
 
@@ -55,10 +56,14 @@ def run(marketplace, spreadsheet_url, performance_key, performance_secret, clien
         except:
             logger.exception('Failed to run program:')
 
+    process = Process(target=work)
+
     if background_tasks:
-        background_tasks.add_task(work)
+        background_tasks.add_task(process.start)
+        background_tasks.add_task(process.join)
     else:
-        work()
+        process.start()
+        process.join()
 
     return spreadsheet_url
 

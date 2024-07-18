@@ -1,4 +1,4 @@
-from ozon import Parser as OzonParser
+from src.ozon import Parser as OzonParser
 import requests
 from loguru import logger
 from tqdm import tqdm
