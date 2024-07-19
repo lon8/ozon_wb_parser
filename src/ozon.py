@@ -3,6 +3,12 @@ import csv
 from loguru import logger
 import dateutil.parser
 from time import sleep
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+PROXY= {"https": os.environ.get('ROXY')}
+
 
 class Parser:
 
@@ -101,7 +107,7 @@ class Parser:
                     "Api-Key": self.__client_key
                 }
 
-        response = method(url, headers=headers, json=json)
+        response = method(url, headers=headers, json=json, proxies=PROXY)
         try:
             response.raise_for_status()
         except Exception as e:
